@@ -25,8 +25,10 @@ pontszám nem jelent diagnózist, az alacsony nem zárja ki egy állapot fennál
 - **Vizuális kiértékelés:** állapot- és domén-radar, valószínűség-sávok, kiemelt
   profilok, kombináció- és differenciál-jelzések
 - **PDF-export** (kliens-oldalon készül)
-- **Minden adat helyben marad** — semmilyen válasz nem hagyja el a böngésződet
-  (localStorage, nincs szerver, nincs követés)
+- **A válaszaid helyben maradnak** — a kitöltés a böngésződ localStorage-ában tárolódik,
+  az alkalmazás nem küldi szerverre és nem tartalmaz analytics/követő kódot.
+  (A tárhely — GitHub Pages — a szokásos hozzáférési naplót vezetheti, pl. IP-cím;
+  a teszt tartalmát ez nem látja.)
 - Sötét / világos téma
 
 ## Technikai

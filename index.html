@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neurodiverz profil-szűrő</title>
 <meta name="description" content="Tájékoztatási és önismereti célú neurodiverz profil-szűrő — 14 állapot, interaktív kérdőív és vizuális kiértékelés.">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=4">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
 </head>
 <body>
@@ -31,7 +31,7 @@
         Ez az interaktív kérdőív <b>14 neurodiverz mintázat</b> (ADHD, autizmus, diszlexia, diszkalkulia,
         diszgráfia, diszpraxia, Tourette, OCD, szenzoros feldolgozás, nyelvi zavar, PDA, hiperlexia,
         mizofónia és a kétszeresen kivételes profil) megfigyelhető viselkedésformáira kérdez rá.
-        A végén egy <b>vizuális profilt</b> kapsz — radardiagrammal, valószínűség-sávokkal és
+        A végén egy <b>vizuális profilt</b> kapsz — radardiagrammal, egyetértési sávokkal és
         kombinációs elemzéssel —, amelyet <b>PDF-be is exportálhatsz</b>.
       </p>
 
@@ -40,7 +40,7 @@
         <span class="pill">⏱️ kb. <b>12–18</b> perc</span>
         <span class="pill">📊 vizuális kiértékelés</span>
         <span class="pill">📄 PDF-export</span>
-        <span class="pill">🔒 minden adat <b>helyben</b> marad (nincs feltöltés)</span>
+        <span class="pill">🔒 a <b>válaszaid</b> a böngésződben maradnak (nem küldjük szerverre)</span>
       </div>
 
       <p style="color:var(--text-soft); margin-top:18px; font-size:.94rem">
@@ -73,13 +73,15 @@
           <label for="ageInput">Pontos életkor (opcionális — segít az értelmezésben):</label>
           <input id="ageInput" type="number" min="3" max="120" inputmode="numeric" placeholder="pl. 34">
         </div>
+        <p class="ms-note">Gyermek-mód: a kisgyermekkori viselkedés gyakran életkori jellegzetesség, nem zavar. Az eredmény ilyenkor <b>megfigyelési jegyzet</b> a szakemberrel való beszélgetéshez, nem a gyermek értékelése.</p>
       </div>
 
       <div class="disclaimer">
         <b>Ez egy tájékoztatási és önismereti eszköz, NEM diagnosztikai teszt.</b>
         A neurodivergencia megállapításához klinikai szakember (pszichiáter, klinikai pszichológus,
-        neurológus, logopédus) mélyreható értékelése szükséges. A magas pontszám nem jelent diagnózist,
-        az alacsony nem zárja ki egy állapot fennállását — különösen erős kompenzáció vagy maszkolás esetén.
+        neurológus, logopédus) mélyreható értékelése szükséges. A végén kapott százalék az adott témakör
+        állításaival való <b>egyetértésed átlaga</b> — <b>nem valószínűség</b> és nem diagnózis. A magas érték nem jelent
+        diagnózist, az alacsony nem zárja ki egy állapot fennállását — különösen erős kompenzáció vagy maszkolás esetén.
       </div>
 
       <div class="actions">
@@ -94,10 +96,12 @@
   <section id="screen-test" class="hidden">
     <div class="progress-shell">
       <div class="progress-meta">
-        <span id="progText">0 / 112 kérdés megválaszolva</span>
+        <span id="progText" aria-live="polite">0 / 112 kérdés megválaszolva</span>
         <span id="progStep">1. lap / 8</span>
       </div>
-      <div class="progress-track"><div id="progFill" class="progress-fill"></div></div>
+      <div id="progBar" class="progress-track" role="progressbar" aria-label="Kitöltési haladás" aria-valuemin="0" aria-valuemax="112" aria-valuenow="0">
+        <div id="progFill" class="progress-fill"></div>
+      </div>
     </div>
 
     <div class="card">
@@ -121,9 +125,16 @@
   <section id="screen-result" class="hidden">
     <div class="card" id="resultCard">
       <div class="result-head">
-        <h2>A neurodiverz profilod</h2>
+        <h2 id="resultHeading">A neurodiverz profilod</h2>
         <p>Kiértékelés dátuma: <span id="resultDate"></span></p>
         <p id="resultMode" style="font-size:.86rem;color:var(--text-mute);margin-top:2px"></p>
+      </div>
+
+      <div id="validityWarn" class="validity-warn hidden" role="alert"></div>
+
+      <div class="metric-explainer">
+        Az alábbi százalékok azt mutatják, <b>mennyire értettél egyet</b> az egyes témakörök állításaival (a válaszaid átlaga).
+        <b>Ez NEM valószínűség és NEM diagnózis</b> — a sávhatárok tájékoztató jellegűek, nem klinikailag kalibráltak.
       </div>
 
       <div class="namefield">
@@ -135,21 +146,24 @@
       <div class="charts-grid">
         <div class="chartbox">
           <div style="position:relative;height:330px"><canvas id="chartCond"></canvas></div>
-          <div class="chart-cap">Állapot-profil (illeszkedési mutató, %)</div>
+          <div class="chart-cap">Állapot-profil (egyetértési mutató, % — nem valószínűség)</div>
+          <p id="chartSrCond" class="sr-only"></p>
         </div>
         <div class="chartbox">
           <div style="position:relative;height:330px"><canvas id="chartDom"></canvas></div>
           <div class="chart-cap">Tünet-domén profil (%)</div>
+          <p id="chartSrDom" class="sr-only"></p>
         </div>
       </div>
 
-      <div class="section-title">Jelzés-erősség állapotonként</div>
+      <div class="section-title">Egyetértési mutató állapotonként</div>
       <div id="bars"></div>
       <div class="band-legend">
         <span><i style="background:#94a3b8"></i>Minimális (0–24%)</span>
-        <span><i style="background:#10b981"></i>Enyhe (25–44%)</span>
-        <span><i style="background:#f59e0b"></i>Mérsékelt (45–64%)</span>
-        <span><i style="background:#ef4444"></i>Erős (65–100%)</span>
+        <span><i style="background:#10b981"></i>Alacsony (25–44%)</span>
+        <span><i style="background:#f59e0b"></i>Közepes (45–64%)</span>
+        <span><i style="background:#ef4444"></i>Magas (65–100%)</span>
+        <span style="opacity:.8">◇ = nem önálló diagnózis</span>
       </div>
 
       <div class="section-title">Kiemelt profilok</div>
@@ -170,8 +184,10 @@
         illetve a szakemberrel való beszélgetés előkészítéseként érdemes használni. Orvosi, pedagógiai vagy jogi döntést kizárólag
         szakvélemény alapján hozz.
         <br><br>
-        <span style="color:var(--text-mute)">A „nem önálló diagnózis” jelölésű mintázatok (szenzoros feldolgozás, PDA, hiperlexia, kétszeresen kivételes)
-        a szakirodalomban tüneti mintázatként, nem önálló diagnosztikai kategóriaként szerepelnek.</span>
+        <span style="color:var(--text-mute)">A „◇ nem önálló diagnózis” jelölésű mintázatok (szenzoros feldolgozás, PDA, hiperlexia, kétszeresen kivételes)
+        a szakirodalomban tüneti mintázatként, nem önálló diagnosztikai kategóriaként szerepelnek; a hiperlexia/PDA jellemzően csak emelkedett autizmus-profil mellett értelmezhető.
+        A megjelenített <b>százalék a válaszaid átlaga, nem valószínűség</b>; a sávhatárok (25/45/65%) tájékoztató jellegűek, nem kalibráltak. A teszt nem tartalmaz
+        validitás-mintát és normákat, így átlagos válaszadásnál is mutathat „közepes” értékeket.</span>
       </div>
     </div>
 
@@ -180,7 +196,7 @@
       <button id="backToTest" class="btn btn-ghost">◂ Vissza a kérdésekhez</button>
       <button id="retakeBtn" class="btn btn-ghost">Új kitöltés</button>
     </div>
-    <p class="foot">A PDF a böngésződben készül — semmilyen adat nem hagyja el a géped.</p>
+    <p class="foot">A PDF a böngésződben készül; a válaszaidat nem küldjük szerverre. (A weboldal tárhelye — GitHub Pages — a szokásos hozzáférési naplót vezetheti, pl. IP-cím; a teszt tartalmát ez nem látja.)</p>
   </section>
 
 </div>
@@ -188,7 +204,7 @@
 <script src="vendor/chart.umd.min.js"></script>
 <script src="vendor/html2canvas.min.js"></script>
 <script src="vendor/jspdf.umd.min.js"></script>
-<script src="questions.js"></script>
-<script src="app.js"></script>
+<script src="questions.js?v=4"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>
