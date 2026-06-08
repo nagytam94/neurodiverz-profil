@@ -9,7 +9,7 @@
 const CONDITIONS = [
   { c:"adhd", name:"ADHD", full:"Figyelemhiányos hiperaktivitás-zavar", color:"#ef4444", formal:true, cutoff:56, cutoffNote:"ASRS-5 (Ustun 2017): ≥14/25 ≈ 56%. Szenzitivitás 91% / specificitás 96%.",
     desc:"A figyelem, a végrehajtó funkciók és/vagy a hiperaktivitás-impulzivitás tartós, a mindennapokat befolyásoló eltérése." },
-  { c:"asd", name:"Autizmus (ASD)", full:"Autizmus spektrum", color:"#6366f1", formal:true, cutoff:60, cutoffNote:"AQ-10 (Allison 2012, NICE-ajánlott gyorsszűrő): ≥6/10 ≈ 60%. (A RAADS-R alacsonyabb, érzékenyebb küszöböt ad.)",
+  { c:"asd", name:"Autizmus (ASD)", full:"Autizmus spektrum", color:"#6366f1", formal:true, cutoff:60, cutoffNote:"AQ-10 (Allison 2012, NICE-ajánlott gyorsszűrő): ≥6/10 ≈ 60%. Szenz. 88% / spec. 91%. (Bináris eredeti → durvább átvitel; a RAADS-R alacsonyabb, érzékenyebb küszöböt ad.)",
     desc:"Eltérő szociális kommunikáció, repetitív viselkedés/szűk érdeklődés és gyakori szenzoros érzékenység." },
   { c:"diszlexia", name:"Diszlexia", full:"Olvasászavar", color:"#f59e0b", formal:true, cutoff:40, cutoffNote:"ARHQ (Lefly & Pennington 2000): ≥0,40 arány ≈ 40%. Szenz. 82% / spec. 78%.",
     desc:"Az olvasás pontosságának/folyékonyságának és a helyesírásnak az általános képességhez mért elmaradása." },
@@ -21,7 +21,7 @@ const CONDITIONS = [
     desc:"A motoros koordináció és a mozgástervezés (praxis) az életkorhoz mért feltűnő nehézsége." },
   { c:"tourette", name:"Tourette / tic", full:"Tourette-szindróma és tic-zavarok", color:"#8b5cf6", formal:true, cutoff:null, cutoffNote:"Nincs validált felnőtt önszűrő küszöb a szakirodalomban — az érték csak tájékozódásra.",
     desc:"Akaratlan, ismétlődő motoros és/vagy vokális tic-ek, gyakran megelőző (premonitórikus) feszültséggel." },
-  { c:"ocd", name:"OCD", full:"Kényszerbetegség", color:"#ec4899", formal:true, cutoff:29, cutoffNote:"OCI-R (Foa 2002): ≥21/72 ≈ 29%. Azonos 0–4 Likert-formátum, jól átvihető.",
+  { c:"ocd", name:"OCD", full:"Kényszerbetegség", color:"#ec4899", formal:true, cutoff:29, cutoffNote:"OCI-R (Foa 2002): ≥21/72 ≈ 29%. Validált klinikai cutoff; azonos 0–4 Likert-formátum, ezért jól átvihető.",
     desc:"Visszatérő, nemkívánt gondolatok (obszessziók) és szorongáscsökkentő ismétlő cselekvések (kompulziók)." },
   { c:"spd", name:"Szenzoros (SPD)", full:"Szenzoros feldolgozási zavar", color:"#f97316", formal:false, cutoff:null, cutoffNote:"Nincs validált felnőtt önszűrő küszöb a szakirodalomban — az érték csak tájékozódásra.",
     desc:"Az érzékszervi ingerek szokatlan feldolgozása (túl- vagy alulérzékenység, ingerkeresés). Nem önálló diagnózis." },
