@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neurodiverz profil-szűrő</title>
+<meta name="description" content="Tájékoztatási és önismereti célú neurodiverz profil-szűrő — 14 állapot, interaktív kérdőív és vizuális kiértékelés.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Fejléc -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">🧠</div>
+      <div>
+        <h1>Neurodiverz profil-szűrő</h1>
+        <p>Önismereti eszköz · 14 neurodivergens mintázat</p>
+      </div>
+    </div>
+    <button id="themeBtn" class="iconbtn" title="Sötét / világos téma" aria-label="Téma váltása">🌙</button>
+  </header>
+
+  <!-- =================== INTRO =================== -->
+  <section id="screen-intro">
+    <div class="card hero fade-in">
+      <h2>Ismerd meg a saját neurodivergens profilod</h2>
+      <p class="lead">
+        Ez az interaktív kérdőív <b>14 neurodiverz mintázat</b> (ADHD, autizmus, diszlexia, diszkalkulia,
+        diszgráfia, diszpraxia, Tourette, OCD, szenzoros feldolgozás, nyelvi zavar, PDA, hiperlexia,
+        mizofónia és a kétszeresen kivételes profil) megfigyelhető viselkedésformáira kérdez rá.
+        A végén egy <b>vizuális profilt</b> kapsz — radardiagrammal, valószínűség-sávokkal és
+        kombinációs elemzéssel —, amelyet <b>PDF-be is exportálhatsz</b>.
+      </p>
+
+      <div class="pillrow">
+        <span class="pill">🧩 <b>112</b> kérdés</span>
+        <span class="pill">⏱️ kb. <b>12–18</b> perc</span>
+        <span class="pill">📊 vizuális kiértékelés</span>
+        <span class="pill">📄 PDF-export</span>
+        <span class="pill">🔒 minden adat <b>helyben</b> marad (nincs feltöltés)</span>
+      </div>
+
+      <p style="color:var(--text-soft); margin-top:18px; font-size:.94rem">
+        Válaszolj minden állításra aszerint, mennyire <b>jellemző rád általában</b> — nincs jó vagy rossz válasz.
+        Gondolj a felnőttkori és a gyermekkori tapasztalataidra is. A válaszaid a böngésződben mentődnek,
+        így bármikor folytathatod.
+      </p>
+
+      <p id="resumeNote" class="hidden" style="margin-top:10px;color:var(--accent-2);font-weight:600;font-size:.92rem">
+        ▸ Van egy korábbi, félbehagyott kitöltésed (<span id="resumeCount">0</span> válasz). A gombbal folytathatod.
+      </p>
+
+      <div class="mode-select">
+        <div class="ms-title">Ki tölti ki? <span>— ez igazítja a kérdések megfogalmazását</span></div>
+        <div class="ms-opts">
+          <label class="ms-opt">
+            <input type="radio" name="lifestage" value="felnott" checked>
+            <span class="ms-card"><b>Felnőttként, magamról</b><small>18+ · munka, kapcsolatok, mindennapok</small></span>
+          </label>
+          <label class="ms-opt">
+            <input type="radio" name="lifestage" value="serdulo">
+            <span class="ms-card"><b>Serdülőként, magamról</b><small>kb. 12–17 · iskola, barátok, otthon</small></span>
+          </label>
+          <label class="ms-opt">
+            <input type="radio" name="lifestage" value="gyermek">
+            <span class="ms-card"><b>Egy gyermekről, szülőként</b><small>kb. 4–11 · a gyermeket megfigyelve</small></span>
+          </label>
+        </div>
+        <div class="ms-age">
+          <label for="ageInput">Pontos életkor (opcionális — segít az értelmezésben):</label>
+          <input id="ageInput" type="number" min="3" max="120" inputmode="numeric" placeholder="pl. 34">
+        </div>
+      </div>
+
+      <div class="disclaimer">
+        <b>Ez egy tájékoztatási és önismereti eszköz, NEM diagnosztikai teszt.</b>
+        A neurodivergencia megállapításához klinikai szakember (pszichiáter, klinikai pszichológus,
+        neurológus, logopédus) mélyreható értékelése szükséges. A magas pontszám nem jelent diagnózist,
+        az alacsony nem zárja ki egy állapot fennállását — különösen erős kompenzáció vagy maszkolás esetén.
+      </div>
+
+      <div class="actions">
+        <button id="startBtn" class="btn btn-primary btn-lg">Teszt indítása ▸</button>
+        <button id="restartBtn" class="btn btn-ghost">Elölről kezdés</button>
+      </div>
+    </div>
+    <p class="foot">Az állítások a 14 állapot szakirodalmi tünet- és viselkedés-katalógusából származnak (DSM-5-TR / ICD-11 alapú tudásbázis).</p>
+  </section>
+
+  <!-- =================== TESZT =================== -->
+  <section id="screen-test" class="hidden">
+    <div class="progress-shell">
+      <div class="progress-meta">
+        <span id="progText">0 / 112 kérdés megválaszolva</span>
+        <span id="progStep">1. lap / 8</span>
+      </div>
+      <div class="progress-track"><div id="progFill" class="progress-fill"></div></div>
+    </div>
+
+    <div class="card">
+      <div class="qhead">
+        <span class="step-label" id="stepLabel">Kérdések</span>
+      </div>
+      <div id="questions"></div>
+
+      <div class="actions" style="justify-content:space-between">
+        <button id="prevBtn" class="btn btn-ghost">◂ Előző</button>
+        <div style="display:flex;gap:12px">
+          <button id="nextBtn" class="btn btn-primary">Tovább ▸</button>
+          <button id="finishBtn" class="btn btn-primary hidden">Kiértékelés ▸</button>
+        </div>
+      </div>
+    </div>
+    <p class="foot">A kihagyott kérdéseket a kiértékelés nem számolja be — nem rontják a profilodat.</p>
+  </section>
+
+  <!-- =================== EREDMÉNY =================== -->
+  <section id="screen-result" class="hidden">
+    <div class="card" id="resultCard">
+      <div class="result-head">
+        <h2>A neurodiverz profilod</h2>
+        <p>Kiértékelés dátuma: <span id="resultDate"></span></p>
+        <p id="resultMode" style="font-size:.86rem;color:var(--text-mute);margin-top:2px"></p>
+      </div>
+
+      <div class="namefield">
+        <label for="nameInput">Név a PDF-en (opcionális):</label>
+        <input id="nameInput" type="text" placeholder="pl. Minta Anna" maxlength="60">
+      </div>
+
+      <div class="section-title">Profil-térkép</div>
+      <div class="charts-grid">
+        <div class="chartbox">
+          <div style="position:relative;height:330px"><canvas id="chartCond"></canvas></div>
+          <div class="chart-cap">Állapot-profil (illeszkedési mutató, %)</div>
+        </div>
+        <div class="chartbox">
+          <div style="position:relative;height:330px"><canvas id="chartDom"></canvas></div>
+          <div class="chart-cap">Tünet-domén profil (%)</div>
+        </div>
+      </div>
+
+      <div class="section-title">Jelzés-erősség állapotonként</div>
+      <div id="bars"></div>
+      <div class="band-legend">
+        <span><i style="background:#94a3b8"></i>Minimális (0–24%)</span>
+        <span><i style="background:#10b981"></i>Enyhe (25–44%)</span>
+        <span><i style="background:#f59e0b"></i>Mérsékelt (45–64%)</span>
+        <span><i style="background:#ef4444"></i>Erős (65–100%)</span>
+      </div>
+
+      <div class="section-title">Kiemelt profilok</div>
+      <div id="highlights" class="hl-grid"></div>
+      <p id="hlEmpty" class="empty-soft hidden">Egyik profil sem emelkedik a mérsékelt szint (45%) fölé — nincs kifejezetten kiugró mintázat a válaszaid alapján.</p>
+
+      <div class="section-title">Kombinációs (komorbid) mintázatok</div>
+      <div id="combos"></div>
+
+      <div class="section-title">Elkülönítési megjegyzések</div>
+      <div id="diffs"></div>
+
+      <div class="result-disclaimer">
+        <b>Fontos:</b> Ez az eredmény <b>nem diagnózis</b>. A neurodivergens profilok (ADHD, autizmus, diszlexia és társaik)
+        megállapításához szakember mélyreható értékelése szükséges; ez a kérdőív nem helyettesíti azt. A magas illeszkedési mutató
+        egy területen nem jelent diagnózist, az alacsony nem zárja ki az állapotot — főleg erős kompenzáció vagy maszkolás mellett.
+        Több profil egyidejű emelkedése gyakori és normális (a tünetek átfednek). Az eredményt önismereti kiindulópontként,
+        illetve a szakemberrel való beszélgetés előkészítéseként érdemes használni. Orvosi, pedagógiai vagy jogi döntést kizárólag
+        szakvélemény alapján hozz.
+        <br><br>
+        <span style="color:var(--text-mute)">A „nem önálló diagnózis” jelölésű mintázatok (szenzoros feldolgozás, PDA, hiperlexia, kétszeresen kivételes)
+        a szakirodalomban tüneti mintázatként, nem önálló diagnosztikai kategóriaként szerepelnek.</span>
+      </div>
+    </div>
+
+    <div class="actions" style="justify-content:center">
+      <button id="pdfBtn" class="btn btn-primary btn-lg">📄 Kiértékelés exportálása PDF-be</button>
+      <button id="backToTest" class="btn btn-ghost">◂ Vissza a kérdésekhez</button>
+      <button id="retakeBtn" class="btn btn-ghost">Új kitöltés</button>
+    </div>
+    <p class="foot">A PDF a böngésződben készül — semmilyen adat nem hagyja el a géped.</p>
+  </section>
+
+</div>
+
+<script src="vendor/chart.umd.min.js"></script>
+<script src="vendor/html2canvas.min.js"></script>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script src="questions.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
