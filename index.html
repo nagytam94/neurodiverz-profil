@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neurodiverz profil-szűrő</title>
 <meta name="description" content="Tájékoztatási és önismereti célú neurodiverz profil-szűrő — 14 állapot, interaktív kérdőív és vizuális kiértékelés.">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
 </head>
 <body>
@@ -108,6 +108,7 @@
       <div class="qhead">
         <span class="step-label" id="stepLabel">Kérdések</span>
       </div>
+      <p class="scale-hint">Válaszolj aszerint, mennyire jellemző rád. Ha egy állítás olyasmiről szól, ami rád <b>egyáltalán nem igaz</b> (például nincs is ilyen tüneted vagy élményed), nyugodtan jelöld az <b>„Egyáltalán nem”-et</b>.</p>
       <div id="questions"></div>
 
       <div class="actions" style="justify-content:space-between">
@@ -224,19 +225,17 @@
     </div>
 
     <div class="actions" style="justify-content:center">
-      <button id="pdfBtn" class="btn btn-primary btn-lg">📄 Kiértékelés exportálása PDF-be</button>
+      <button id="pdfBtn" class="btn btn-primary btn-lg">🖨️ Mentés PDF-be (nyomtatás)</button>
       <button id="backToTest" class="btn btn-ghost">◂ Vissza a kérdésekhez</button>
       <button id="retakeBtn" class="btn btn-ghost">Új kitöltés</button>
     </div>
-    <p class="foot">A PDF a böngésződben készül; a válaszaidat nem küldjük szerverre. (A weboldal tárhelye — GitHub Pages — a szokásos hozzáférési naplót vezetheti, pl. IP-cím; a teszt tartalmát ez nem látja.)</p>
+    <p class="foot">A „Mentés PDF-be” a böngésző nyomtatási ablakát nyitja meg — ott válaszd a „PDF-be mentés”/„Cél: PDF” opciót. A válaszaidat nem küldjük szerverre.</p>
   </section>
 
 </div>
 
 <script src="vendor/chart.umd.min.js"></script>
-<script src="vendor/html2canvas.min.js"></script>
-<script src="vendor/jspdf.umd.min.js"></script>
-<script src="questions.js?v=5"></script>
-<script src="app.js?v=5"></script>
+<script src="questions.js?v=6"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>

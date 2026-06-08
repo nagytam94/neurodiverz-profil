@@ -323,8 +323,31 @@ fieldset.q:last-child{border-bottom:none}
 .next-steps li{margin:5px 0}
 .next-steps .ns-help{margin:6px 0 0; font-size:.86rem; padding-top:10px; border-top:1px solid var(--border)}
 
+/* skála-útmutató a teszt tetején */
+.scale-hint{font-size:.85rem; color:var(--text-soft); background:var(--surface-2); border:1px solid var(--border); border-radius:11px; padding:10px 14px; margin:0 0 8px}
+.scale-hint b{color:var(--text)}
+
 /* mozgás-csökkentés (vesztibuláris/figyelmi trigger elkerülése) */
 @media(prefers-reduced-motion: reduce){
   *, *::before, *::after{animation-duration:.001ms!important; animation-iteration-count:1!important; transition-duration:.001ms!important}
   html{scroll-behavior:auto}
+}
+
+/* ---- Nyomtatás → PDF-be mentés ---- */
+@media print{
+  .topbar, #screen-intro, #screen-test, .actions, .foot, #themeBtn, .namefield{ display:none !important }
+  :root, [data-theme="dark"]{
+    --bg:#fff; --surface:#fff; --surface-2:#f5f6fa; --text:#111418;
+    --text-soft:#2f3445; --text-mute:#565c70; --border:#cfd3e0;
+    --shadow:none; --shadow-sm:none;
+  }
+  body{ background:#fff !important }
+  .wrap{ max-width:100%; padding:0 }
+  #screen-result{ display:block !important }
+  #screen-result > .card{ box-shadow:none !important; border:none !important; padding:0 !important; background:#fff !important }
+  .chartbox, .hl, .note-box, .bar-track, .lit-track, .metric-explainer, .validity-warn, .distress-callout, .next-steps, .result-disclaimer{ box-shadow:none !important }
+  .section-title, .hl, .lit-row, .note-box, .bar-row, .distress-callout, .metric-explainer, .validity-warn, .next-steps, .result-disclaimer, .chartbox{ break-inside:avoid }
+  .charts-grid, .hl-grid{ grid-template-columns:1fr 1fr !important }
+  a[href^="tel"]{ color:#111 !important; text-decoration:none }
+  @page{ margin:12mm }
 }

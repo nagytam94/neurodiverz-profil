@@ -402,47 +402,28 @@ function renderCharts(scores, opts){
 }
 function destroyChart(k){ if(state.charts[k]){ state.charts[k].destroy(); state.charts[k]=null; } }
 
-/* ---------- PDF export ---------- */
-async function exportPDF(){
-  const btn = $("#pdfBtn"); const orig = btn.innerHTML;
-  btn.disabled = true; btn.innerHTML = `<span class="spinner"></span> PDF készítése…`;
-  const node = $("#resultCard");
+/* ---------- PDF export: natív nyomtatás ----------
+   Korábban html2canvas+jsPDF futott, de a html2canvas 1.4.1 nem tudja a modern CSS-t
+   (color-mix) → hibára futott és a téma beragadt. A böngésző natív Nyomtatás → „PDF-be
+   mentés" megbízható, kijelölhető szövegű PDF-et ad; a megjelenést @media print intézi. */
+function exportPDF(){
   const wasDark = document.documentElement.getAttribute("data-theme")==="dark";
-  try{
-    // K8: animáció KIKAPCSOLVA a PDF-hez (nincs félkész radar); világos téma a tiszta exporthoz
-    if(wasDark) document.documentElement.setAttribute("data-theme","light");
-    renderCharts(computeScores(), {noAnim:true});
-    await new Promise(r=>setTimeout(r, 350));
-    node.classList.add("pdf-mode");
-    const canvas = await html2canvas(node, {scale:2, backgroundColor:"#ffffff", useCORS:true, logging:false});
-    node.classList.remove("pdf-mode");
-
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF("p","mm","a4");
-    const pw = pdf.internal.pageSize.getWidth(), ph = pdf.internal.pageSize.getHeight();
-    const margin = 8, imgW = pw - margin*2, imgH = canvas.height * imgW / canvas.width;
-    const usable = ph - margin*2;
-    const img = canvas.toDataURL("image/jpeg",0.92);
-    let left = imgH, pos = margin;
-    pdf.addImage(img, "JPEG", margin, pos, imgW, imgH);
-    left -= usable;
-    while(left > 0){
-      pdf.addPage();
-      pos = margin - (imgH - left);
-      pdf.addImage(img, "JPEG", margin, pos, imgW, imgH);
-      left -= usable;
-    }
-    const d = new Date();
-    const stamp = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-    const nm = ($("#nameInput").value||"").trim().replace(/[^\p{L}\p{N}_-]+/gu,"_");
-    pdf.save(`neurodiverz-profil_${nm?nm+"_":""}${stamp}.pdf`);
-  }catch(e){
-    alert("A PDF készítése nem sikerült: "+e.message+"\n\nTipp: a böngésző Nyomtatás → PDF-be mentés funkciója is működik.");
-  }finally{
-    if(wasDark) document.documentElement.setAttribute("data-theme","dark");
-    renderCharts(computeScores());
-    btn.disabled=false; btn.innerHTML=orig;
-  }
+  const origTitle = document.title;
+  const d = new Date();
+  const stamp = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  const nm = ($("#nameInput").value||"").trim();
+  document.title = `neurodiverz-profil${nm?" - "+nm:""} - ${stamp}`;   // → alap PDF-fájlnév
+  let restored = false;
+  const restore = ()=>{
+    if(restored) return; restored = true;
+    window.removeEventListener("afterprint", restore);
+    document.title = origTitle;
+    if(wasDark){ document.documentElement.setAttribute("data-theme","dark"); renderCharts(computeScores()); }
+  };
+  // világos téma + statikus (animáció nélküli) grafikon a tiszta nyomtatáshoz
+  if(wasDark){ document.documentElement.setAttribute("data-theme","light"); renderCharts(computeScores(), {noAnim:true}); }
+  window.addEventListener("afterprint", restore);
+  setTimeout(()=>{ try{ window.print(); } finally { setTimeout(restore, 2000); } }, 350);
 }
 
 /* ---------- dátum ---------- */
