@@ -293,6 +293,11 @@ function showResults(){
   if(vWarn.length){ vEl.classList.remove("hidden"); vEl.innerHTML = "⚠️ <b>Az eredmény értelmezéséhez:</b> "+vWarn.join(" "); }
   else vEl.classList.add("hidden");
 
+  // distressz-kiemelés: magas OCD/PDA/mizofónia vagy érzelmi-szabályozási domén → krízis-útvonal előtérbe
+  const erzDom = scores.domains.find(d=>d.d==="ERZ");
+  const distress = valid.some(c=>["ocd","pda","mizofonia"].includes(c.c) && c.pct>=65) || (erzDom && erzDom.pct>=65);
+  $("#distressCallout").classList.toggle("hidden", !distress);
+
   // 1) kiemelt profilok (közepes+), nem-formális konstruktum külön keretezve
   const top = ranked.filter(c=>c.pct>=45);
   const hl = $("#highlights");
@@ -325,6 +330,23 @@ function showResults(){
     </div>`;
   }).join("") + (lowData.length ? `<p class="empty-soft">Kevés adat miatt nem értékelt: ${lowData.map(c=>c.name).join(", ")}.</p>` : "");
   if(!REDUCE) requestAnimationFrame(()=>$$("#bars .bar-val").forEach(el=>el.style.width=el.dataset.w+"%"));
+
+  // 2.5) irodalmi viszonyítási küszöbök (csak ahol van validált cutoff + elég adat)
+  const withCut = scores.conds.filter(c=>c.pct!=null && !c.lowData && c.cutoff!=null).sort((a,b)=>b.pct-a.pct);
+  const noCut = scores.conds.filter(c=>c.cutoff==null).map(c=>c.name);
+  $("#litAnchor").innerHTML = (withCut.length ? withCut.map(c=>{
+    const over = c.pct >= c.cutoff;
+    return `<div class="lit-row ${over?"over":"under"}">
+      <div class="lit-nm">${c.name}</div>
+      <div class="lit-track" role="img" aria-label="${c.name}: a te értéked ${c.pct}%, viszonyítási küszöb ${c.cutoff}%">
+        <div class="lit-fill" style="width:${c.pct}%;background:${c.color}"></div>
+        <div class="lit-cut" style="left:${c.cutoff}%"></div>
+      </div>
+      <div class="lit-stat"><b>${c.pct}%</b> · küszöb ≈ ${c.cutoff}% <span class="lit-flag ${over?"f-over":"f-under"}">${over?"✓ eléri/meghaladja":"alatta"}</span></div>
+      <div class="lit-src">${c.cutoffNote}</div>
+    </div>`;
+  }).join("") : `<p class="empty-soft">A megválaszolt adatok alapján nincs megjeleníthető viszonyítás.</p>`)
+   + (noCut.length ? `<p class="lit-none"><b>Nincs validált önszűrő küszöb</b> (csak tájékozódásra): ${noCut.join(", ")}.</p>` : "");
 
   // 3) kombináció (csak elég adatnál)
   const combos = COMBO_RULES.filter(r=>r.when.every(code=>{
