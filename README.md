@@ -24,7 +24,8 @@ pontszám nem jelent diagnózist, az alacsony nem zárja ki egy állapot fennál
   (ASRS, RAADS-R, AQ-50, CAT-Q, EDA-QA, MisoQuest, OCI-R, PUTS, ADC, ARHQ…)
 - **Vizuális kiértékelés:** állapot- és domén-radar, valószínűség-sávok, kiemelt
   profilok, kombináció- és differenciál-jelzések
-- **PDF-export** (kliens-oldalon készül)
+- **PDF-export** a böngésző natív „Nyomtatás → Mentés PDF-be" funkciójával
+  (dedikált `@media print` elrendezés; kijelölhető szövegű, színhelyes kimenet)
 - **A válaszaid helyben maradnak** — a kitöltés a böngésződ localStorage-ában tárolódik,
   az alkalmazás nem küldi szerverre és nem tartalmaz analytics/követő kódot.
   (A tárhely — GitHub Pages — a szokásos hozzáférési naplót vezetheti, pl. IP-cím;
@@ -33,9 +34,9 @@ pontszám nem jelent diagnózist, az alacsony nem zárja ki egy állapot fennál
 
 ## Technikai
 
-Tisztán statikus alkalmazás — HTML + CSS + vanilla JavaScript. Külső függőségek
-(lokálisan mellékelve a `vendor/` mappában): [Chart.js](https://www.chartjs.org/),
-[jsPDF](https://github.com/parallax/jsPDF), [html2canvas](https://html2canvas.hertzen.com/).
+Tisztán statikus alkalmazás — HTML + CSS + vanilla JavaScript. Egyetlen külső függőség,
+lokálisan mellékelve a `vendor/` mappában: [Chart.js](https://www.chartjs.org/) (radardiagramok).
+A PDF a böngésző natív nyomtatásával készül, nem kell hozzá külön könyvtár.
 Nincs build-lépés: `index.html` közvetlenül megnyitható, vagy bármilyen statikus
 tárhelyen (pl. GitHub Pages) kiszolgálható.
 

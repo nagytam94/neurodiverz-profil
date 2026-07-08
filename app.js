@@ -391,6 +391,8 @@ function renderCharts(scores, opts){
       scales:{ r:{ min:0, max:100, ticks:{stepSize:25, color:text, backdropColor:"transparent", font:{size:9}},
         grid:{color:grid}, angleLines:{color:grid}, pointLabels:{color:text, font:{size:10.5}} }},
       animation: noAnim ? false : {duration:700},
+      // nyomtatáshoz felemelt pixel-arány → éles (nem elmosódott) radar a PDF-ben
+      devicePixelRatio: (opts && opts.print) ? 3 : undefined,
     }
   });
   destroyChart("cond"); destroyChart("dom");
@@ -413,17 +415,28 @@ function exportPDF(){
   const stamp = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
   const nm = ($("#nameInput").value||"").trim();
   document.title = `neurodiverz-profil${nm?" - "+nm:""} - ${stamp}`;   // → alap PDF-fájlnév
+
   let restored = false;
   const restore = ()=>{
     if(restored) return; restored = true;
     window.removeEventListener("afterprint", restore);
     document.title = origTitle;
-    if(wasDark){ document.documentElement.setAttribute("data-theme","dark"); renderCharts(computeScores()); }
+    if(wasDark) document.documentElement.setAttribute("data-theme","dark");
+    // képernyős állapot visszaállítása: normál (animált, képernyő-DPR) grafikonok
+    renderCharts(computeScores());
   };
-  // világos téma + statikus (animáció nélküli) grafikon a tiszta nyomtatáshoz
-  if(wasDark){ document.documentElement.setAttribute("data-theme","light"); renderCharts(computeScores(), {noAnim:true}); }
+
+  // 1) mindig világos téma nyomtatáshoz
+  if(wasDark) document.documentElement.setAttribute("data-theme","light");
+  // 2) a sávok álljanak teljes szélességre (ha az animáció még nem futott le, ne csonkoljon a PDF)
+  $$("#bars .bar-val").forEach(el=>{ if(el.dataset.w) el.style.width=el.dataset.w+"%"; });
+  // 3) statikus, felemelt DPR-ű radarok az éles nyomtatásért
+  renderCharts(computeScores(), {noAnim:true, print:true});
+
   window.addEventListener("afterprint", restore);
-  setTimeout(()=>{ try{ window.print(); } finally { setTimeout(restore, 2000); } }, 350);
+  // a renderelés befejezésére hagyunk időt, majd nyomtatunk; a restore-t az afterprint hozza,
+  // a hosszabb fallback csak akkor lép, ha az afterprint elmarad (nem minden böngésző adja ki)
+  setTimeout(()=>{ window.print(); setTimeout(restore, 4000); }, 400);
 }
 
 /* ---------- dátum ---------- */

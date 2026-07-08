@@ -342,6 +342,11 @@ fieldset.q:last-child{border-bottom:none}
     --shadow:none; --shadow-sm:none;
   }
   body{ background:#fff !important }
+  /* a kiértékelés színei (sávok, radar-fill, band-pöttyök) inline background-ra épülnek —
+     a böngésző alapból kifehéríti nyomtatáskor; ez megőrzi őket */
+  #screen-result, #screen-result *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important }
+  /* a sávok teljes szélessége látszódjon akkor is, ha az animáció nem futott le */
+  .bar-val, .lit-fill{ transition:none !important }
   .wrap{ max-width:100%; padding:0 }
   #screen-result{ display:block !important }
   #screen-result > .card{ box-shadow:none !important; border:none !important; padding:0 !important; background:#fff !important }
