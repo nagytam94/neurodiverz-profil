@@ -4,7 +4,7 @@ Interaktív, magyar nyelvű **önismereti** kérdőív, amely 14 neurodivergens 
 (ADHD, autizmus, diszlexia, diszkalkulia, diszgráfia, diszpraxia/DCD, Tourette/tic,
 OCD, szenzoros feldolgozás, fejlődési nyelvi zavar, PDA, hiperlexia, mizofónia és a
 kétszeresen kivételes profil) megfigyelhető viselkedésformáira kérdez rá, majd egy
-vizuális **neurodiverz profilt** ad — radardiagramokkal, valószínűség-sávokkal,
+vizuális **neurodiverz profilt** ad — radardiagramokkal, egyetértési sávokkal,
 kombinációs (komorbid) elemzéssel —, amely **PDF-be is exportálható**.
 
 ➡️ **Élő verzió:** https://nagytam94.github.io/neurodiverz-profil/

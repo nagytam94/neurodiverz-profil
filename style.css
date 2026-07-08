@@ -216,10 +216,6 @@ body{
 .foot{text-align:center; margin-top:30px; color:var(--text-mute); font-size:.78rem}
 .hidden{display:none!important}
 
-/* pdf rendering mode: force light, tidy */
-.pdf-mode{background:#fff!important}
-.pdf-mode .chartbox,.pdf-mode .hl,.pdf-mode .note-box,.pdf-mode .bar-track,.pdf-mode .opt{box-shadow:none!important}
-
 .spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;display:inline-block;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .fade-in{animation:fade .4s ease both}

@@ -408,7 +408,10 @@ function destroyChart(k){ if(state.charts[k]){ state.charts[k].destroy(); state.
    Korábban html2canvas+jsPDF futott, de a html2canvas 1.4.1 nem tudja a modern CSS-t
    (color-mix) → hibára futott és a téma beragadt. A böngésző natív Nyomtatás → „PDF-be
    mentés" megbízható, kijelölhető szövegű PDF-et ad; a megjelenést @media print intézi. */
+let pdfBusy = false;
 function exportPDF(){
+  if(pdfBusy) return;   // re-entrancy guard: dupla kattintás ne veszítse el a témát/címet
+  pdfBusy = true;
   const wasDark = document.documentElement.getAttribute("data-theme")==="dark";
   const origTitle = document.title;
   const d = new Date();
@@ -424,6 +427,7 @@ function exportPDF(){
     if(wasDark) document.documentElement.setAttribute("data-theme","dark");
     // képernyős állapot visszaállítása: normál (animált, képernyő-DPR) grafikonok
     renderCharts(computeScores());
+    pdfBusy = false;
   };
 
   // 1) mindig világos téma nyomtatáshoz
